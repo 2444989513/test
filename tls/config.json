@@ -1,0 +1,76 @@
+{
+  "log": {
+        "access": "/var/log/v2ray/access.log",
+        "error": "/var/log/v2ray/error.log",
+        "loglevel": "warning"
+    },
+  "inbounds": [
+    {
+      "port": 10086, 
+      "listen": "127.0.0.1", 
+      "tag": "vmess-in", 
+      "protocol": "vmess", 
+      "settings": {
+        "clients": [
+          {
+            "id": "3f3effce-2640-4f29-b95b-a2106df6d96d", 
+            "alterId": 64
+          }
+        ]
+      }, 
+      "streamSettings": {
+        "network": "ws", 
+        "wsSettings": {
+          "path": "/e01ec5ea/"
+        }
+      }
+    }
+  ], 
+  "outbounds": [
+    {
+      "protocol": "freedom", 
+      "settings": {
+        "domainStrategy": "UseIP"
+	  }, 
+      "tag": "direct"
+    }, 
+    {
+      "protocol": "blackhole", 
+      "settings": { }, 
+      "tag": "blocked"
+    }
+  ], 
+  "dns": {
+    "servers": [
+	"https+local://1.1.1.1/dns-query",
+	"https+local://1.0.0.1/dns-query",
+	"https+local://cloudflare-dns.com/dns-query",
+	"https+local://dns.google/dns-query",
+	"https+local://dns.google/resolve",
+	
+	//ipv6 DNS over HTTPS
+	//"https+local://[2606:4700:4700::1111]/dns-query",
+	//"https+local://[2606:4700:4700::1001]/dns-query",
+	//"https+local://[2001:4860:4860::64]/dns-query",
+	//"https+local://[2001:4860:4860::6464]/dns-query",
+	
+	"1.1.1.1",
+	"1.0.0.1",
+	"8.8.8.8",
+	"8.8.4.4",
+	"localhost"
+    ]
+  },
+  "routing": {
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      {
+        "type": "field",
+        "inboundTag": [
+          "vmess-in"
+        ],
+        "outboundTag": "direct"
+      }
+    ]
+  }
+}
