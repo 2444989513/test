@@ -3,7 +3,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
 
-v2rayNG_version="1.3.0"
+v2rayNG_version="1.3.1"
 v2rayN_version="3.21"
 
 
@@ -29,11 +29,11 @@ esac
 
 
         read -rp "日期（2020.06.23）:" port
-        [[ -z ${port} ]] && port="2020.06.23"
+        [[ -z ${port} ]] && port="2020.08.15"
 
 
         read -rp "v2ray（4.25.0）:" alterID
-        [[ -z ${alterID} ]] && alterID="4.25.0"
+        [[ -z ${alterID} ]] && alterID="4.27.0"
 
 
 
