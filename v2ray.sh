@@ -86,6 +86,25 @@ go get -v -t -d ./go/src/v2ray.com/core/...
 # Build all installation packages
 cd $GOPATH/src/v2ray.com/core
 
+
+
+go get -u all
+go get -u -t -f -v -fix -insecure
+go get -d
+go mod tidy
+go mod vendor
+go mod verify
+
+
+
+go get -u all
+go get -u -t -f -v -fix -insecure
+go get -d
+go mod tidy
+go mod vendor
+go mod verify
+
+
 bazel build --action_env=GOPATH=$GOPATH --action_env=PATH=$PATH --action_env=GPG_PASS=${SIGN_KEY_PASS} --action_env=SPWD=$PWD --action_env=GOCACHE=$(go env GOCACHE) --spawn_strategy local //release:all
 
 ls /root/.cache/bazel/_bazel_root/5571c66d5bb940674a99e2337ba11798/execroot/v2ray_core/bazel-out/k8-fastbuild/bin/release
