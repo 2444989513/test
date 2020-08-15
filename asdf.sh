@@ -71,6 +71,8 @@ mvgp() {
 }
 mvgpasd() {
 
+    rm -rf /etc/nginx/conf/nginx.conf
+
     if [[ -d /etc/nginx/conf ]]; then
         mv /mvgpop/nginx.conf /etc/nginx/conf
 
@@ -206,18 +208,7 @@ nginx_install() {
         --with-ipv6                                             \
         --without-http_limit_conn_module                        \
         --without-http_limit_req_module                         \
-        --with-http_addition_module                             \
-        --with-http_image_filter_module                         \
-        --with-http_sub_module                                  \
-        --with-http_dav_module                                  \
-        --with-http_concat_module                               \
-        --with-http_random_index_module                         \
-        --with-http_degradation_module                          \
-        --with-http_sysguard_module                             \
-        --with-backtrace_module                                 \
-        --with-http_upstream_check_module                       \
         --with-google_perftools_module                          \
-        --with-http_geoip_module                                \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../"pcre-${pcre_version}"                   \
@@ -242,6 +233,7 @@ nginx_install() {
     rm -rf ../openssl-"${openssl_version}"
     rm -rf ../libunwind-"${libunwind_version}"
     rm -rf ../gperftools-"${google_perftools_version}"
+    rm -rf ../pcre-"${pcre_version}"
     rm -rf ../nginx-"${nginx_version}".tar.gz
     rm -rf ../openssl-"${openssl_version}".tar.gz
     rm -rf ../pcre-"${pcre_version}".tar.gz
