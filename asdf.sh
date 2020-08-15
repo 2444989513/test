@@ -22,9 +22,13 @@ Error="${Red}[错误]${Font}"
 nginx_dir="/etc/nginx"
 nginx_openssl_src="/usr/local/src"
 nginx_systemd_file="/etc/systemd/system/nginx.service"
+
+
 nginx_version="1.19.2"
 openssl_version="1.1.1g"
 pcre_version="8.44"
+libunwind_version="1.5-rc2"
+google-perftools_version="2.8"
 
 jemalloc_version="5.2.1"
 
@@ -103,6 +107,13 @@ nginx_install() {
     wget -nc --no-check-certificate https://ftp.pcre.org/pub/pcre/pcre-${pcre_version}.tar.gz -P ${nginx_openssl_src}
     judge "PCRE 下载"
 
+    wget -nc --no-check-certificate http://download.savannah.gnu.org/releases/libunwind/libunwind-${libunwind_version}.tar.gz -P ${nginx_openssl_src}
+    judge "libunwind 下载"
+
+    wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-2.8/gperftools-${google-perftools_version}.tar.gz -P ${nginx_openssl_src}
+    judge "google-perftools 下载"
+
+
     #wget -nc --no-check-certificate https://github.com/jemalloc/jemalloc/releases/download/${jemalloc_version}/jemalloc-${jemalloc_version}.tar.bz2 -P ${nginx_openssl_src}
     #judge "jemalloc 下载"
 
@@ -122,6 +133,11 @@ nginx_install() {
     [[ -d pcre-${pcre_version} ]] && rm -rf pcre-${pcre_version}
     tar -zxvf pcre-${pcre_version}.tar.gz
 
+    [[ -d libunwind-${libunwind_version} ]] && rm -rf libunwind-${libunwind_version}
+    tar -zxvf libunwind-${libunwind_version}.tar.gz
+
+    [[ -d gperftools-${google-perftools_version} ]] && rm -rf gperftools-${google-perftools_version}
+    tar -zxvf gperftools-${google-perftools_version}.tar.gz
 
     #[[ -d jemalloc-"${jemalloc_version}" ]] && rm -rf jemalloc-"${jemalloc_version}"
     #tar -xvf jemalloc-"${jemalloc_version}".tar.bz2
@@ -132,12 +148,26 @@ nginx_install() {
     sleep 2
 
 
-    cd pcre-${pcre_version}
+    cd libunwind-${libunwind_version}
+    CFLAGS=-fPIC ./configure
+    judge "编译检查"
+    make CFLAGS=-fPIC
+    make CFLAGS=-fPIC install
+    judge "libunwind 编译安装"
+
+    cd ../gperftools-${google-perftools_version}
+    ./configure
+    judge "编译检查"
+    make && make install
+    judge "gperftools 编译安装"
+    echo "/usr/local/lib" > /etc/ld.so.conf.d/usr_local_lib.conf
+    ldconfig
+
+    cd ../pcre-${pcre_version}
     ./configure
     judge "编译检查"
     make && make install
     judge "pcre 编译安装"
-
 
 
     #cd ../jemalloc-${jemalloc_version} || exit
@@ -210,9 +240,13 @@ nginx_install() {
     # 删除临时文件
     rm -rf ../nginx-"${nginx_version}"
     rm -rf ../openssl-"${openssl_version}"
+    rm -rf ../libunwind-"${libunwind_version}"
+    rm -rf ../gperftools-"${google-perftools_version}"
     rm -rf ../nginx-"${nginx_version}".tar.gz
     rm -rf ../openssl-"${openssl_version}".tar.gz
-    rm -rf ../pcre-${pcre_version}.tar.gz
+    rm -rf ../pcre-"${pcre_version}".tar.gz
+    rm -rf ../libunwind-"${libunwind_version}".tar.gz
+    rm -rf ../gperftools-"${google-perftools_version}".tar.gz
 
     # 添加配置文件夹，适配旧版脚本
     #mkdir ${nginx_dir}/conf/conf.d
