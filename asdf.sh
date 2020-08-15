@@ -101,6 +101,8 @@ mvgpasd() {
 
 nginx_install() {
 
+    [[ -d /usr/local/src ]] && rm -rf /usr/local/src
+
     wget -nc --no-check-certificate https://nginx.org/download/nginx-${nginx_version}.tar.gz -P ${nginx_openssl_src}
     judge "Nginx 下载"
     wget -nc --no-check-certificate https://www.openssl.org/source/openssl-${openssl_version}.tar.gz -P ${nginx_openssl_src}
@@ -242,11 +244,11 @@ nginx_install() {
     echo 'export PATH' | sudo tee -a /etc/profile && source /etc/profile
 
     # 删除临时文件
+    #rm -rf ../pcre-"${pcre_version}"
+    #rm -rf ../libunwind-"${libunwind_version}"
+    #rm -rf ../gperftools-"${google_perftools_version}"
     rm -rf ../nginx-"${nginx_version}"
     rm -rf ../openssl-"${openssl_version}"
-    rm -rf ../libunwind-"${libunwind_version}"
-    rm -rf ../gperftools-"${google_perftools_version}"
-    rm -rf ../pcre-"${pcre_version}"
     rm -rf ../nginx-"${nginx_version}".tar.gz
     rm -rf ../openssl-"${openssl_version}".tar.gz
     rm -rf ../pcre-"${pcre_version}".tar.gz
