@@ -225,6 +225,19 @@ nginx_install() {
     #sed -i '$i include conf.d/*.conf;' ${nginx_dir}/conf/nginx.conf
     #sed -i '$i server_tokens off;' ${nginx_dir}/conf/nginx.conf
 
+
+    [[ -d /tmp/tcmalloc ]] && rm -rf /tmp/tcmalloc
+    mkdir /tmp/tcmalloc
+    chmod 777 /tmp/tcmalloc
+    #启用TCMalloc（可选）
+    #创建一个线程目录，将文件放在/tmp/tcmalloc下面
+    #mkdir /tmp/tcmalloc
+    #chmod 777 /tmp/tcmalloc
+    #修改nginx.conf配置文件，在pid这行下面添加配置如下信息：
+    #google_perftools_profiles /tmp/tcmalloc;
+    #然后使用 nginx -s reload 重新加载nginx，使用 lsof -n | grep tcmalloc 查看是否存在tcmalloc进程，如果存在的话就说明加载成功了。
+
+
     echo 'PATH=$PATH:/etc/nginx/sbin' | sudo tee -a /etc/profile
     echo 'export PATH' | sudo tee -a /etc/profile && source /etc/profile
 
