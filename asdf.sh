@@ -158,7 +158,6 @@ nginx_install() {
     ldconfig
 
 
-
     echo -e "${OK} ${GreenBG} 即将开始编译安装 Nginx, 过程稍久，请耐心等待 ${Font}"
     sleep 4
 
@@ -181,6 +180,7 @@ nginx_install() {
         --with-http_image_filter_module                         \
         --with-http_sub_module                                  \
         --with-http_dav_module                                  \
+        --with-http_concat_module                               \
         --with-http_random_index_module                         \
         --with-http_degradation_module                          \
         --with-http_sysguard_module                             \
@@ -213,6 +213,7 @@ nginx_install() {
     rm -rf ../nginx-"${nginx_version}".tar.gz
     rm -rf ../openssl-"${openssl_version}".tar.gz
     rm -rf ../pcre-${pcre_version}.tar.gz
+
     # 添加配置文件夹，适配旧版脚本
     #mkdir ${nginx_dir}/conf/conf.d
 }
