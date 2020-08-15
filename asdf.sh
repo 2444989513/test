@@ -24,9 +24,34 @@ nginx_openssl_src="/usr/local/src"
 nginx_systemd_file="/etc/systemd/system/nginx.service"
 nginx_version="1.19.2"
 openssl_version="1.1.1g"
+pcre_version="8.44"
 
 jemalloc_version="5.2.1"
 
+
+agwvccw() {
+
+yum update -y && yum upgrade -y
+
+yum install dbus chrony wget git lsof crontabs bc unzip qrencode -y
+
+yum  -y install curl pcre pcre-devel zlib-devel epel-release haveged libxslt-devel libtool
+
+yum  -y groupinstall "Development tools"
+
+yum install centos-release-scl scl-utils-build -y
+
+sudo yum install centos-release-scl -y
+
+sudo yum install devtoolset-9 -y
+
+yum install socat nc -y
+
+yum install htop -y
+
+yum install screen nload -y
+
+}
 
 
 mvgp() {
@@ -74,6 +99,10 @@ nginx_install() {
     judge "Nginx 下载"
     wget -nc --no-check-certificate https://www.openssl.org/source/openssl-${openssl_version}.tar.gz -P ${nginx_openssl_src}
     judge "openssl 下载"
+
+    wget -nc --no-check-certificate https://ftp.pcre.org/pub/pcre/pcre-${pcre_version}.tar.gz -P ${nginx_openssl_src}
+    judge "PCRE 下载"
+
     #wget -nc --no-check-certificate https://github.com/jemalloc/jemalloc/releases/download/${jemalloc_version}/jemalloc-${jemalloc_version}.tar.bz2 -P ${nginx_openssl_src}
     #judge "jemalloc 下载"
 
@@ -90,6 +119,10 @@ nginx_install() {
     [[ -d openssl-"$openssl_version" ]] && rm -rf openssl-"$openssl_version"
     tar -zxvf openssl-"$openssl_version".tar.gz
 
+    [[ -d pcre-${pcre_version} ]] && rm -rf pcre-${pcre_version}
+    tar -zxvf pcre-${pcre_version}.tar.gz
+
+
     #[[ -d jemalloc-"${jemalloc_version}" ]] && rm -rf jemalloc-"${jemalloc_version}"
     #tar -xvf jemalloc-"${jemalloc_version}".tar.bz2
 
@@ -98,7 +131,16 @@ nginx_install() {
     echo -e "${OK} ${GreenBG} 即将开始编译安装 jemalloc ${Font}"
     sleep 2
 
-    #cd jemalloc-${jemalloc_version} || exit
+
+    cd pcre-${pcre_version}
+    ./configure
+    judge "编译检查"
+    make && make install
+    judge "pcre 编译安装"
+
+
+
+    #cd ../jemalloc-${jemalloc_version} || exit
     #./configure
     #judge "编译检查"
     #make && make install
@@ -106,7 +148,7 @@ nginx_install() {
     #echo '/usr/local/lib' >/etc/ld.so.conf.d/local.conf
     #ldconfig
 
-    cd jemalloc || exit
+    cd ../jemalloc || exit
     rm -rf .git
     ./autogen.sh
     judge "编译检查"
@@ -114,6 +156,7 @@ nginx_install() {
     judge "jemalloc 编译安装"
     echo '/usr/local/lib' >/etc/ld.so.conf.d/local.conf
     ldconfig
+
 
 
     echo -e "${OK} ${GreenBG} 即将开始编译安装 Nginx, 过程稍久，请耐心等待 ${Font}"
@@ -134,9 +177,23 @@ nginx_install() {
         --with-ipv6                                             \
         --without-http_limit_conn_module                        \
         --without-http_limit_req_module                         \
+        --with-http_addition_module                             \
+        --with-http_image_filter_module                         \
+        --with-http_sub_module                                  \
+        --with-http_dav_module                                  \
+        --with-http_concat_module                               \
+        --with-http_random_index_module                         \
+        --with-http_degradation_module                          \
+        --with-http_sysguard_module                             \
+        --with-backtrace_module                                 \
+        --with-http_upstream_check_module                       \
+        --with-google_perftools_module                          \
+        --with-http_geoip_module                                \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
+        --with-pcre=../"pcre-${pcre_version}"                   \
         --with-openssl=../openssl-"$openssl_version"
+
     judge "编译检查"
     make && make install
     judge "Nginx 编译安装"
@@ -156,6 +213,7 @@ nginx_install() {
     rm -rf ../openssl-"${openssl_version}"
     rm -rf ../nginx-"${nginx_version}".tar.gz
     rm -rf ../openssl-"${openssl_version}".tar.gz
+    rm -rf ../pcre-${pcre_version}.tar.gz
 
     # 添加配置文件夹，适配旧版脚本
     #mkdir ${nginx_dir}/conf/conf.d
@@ -200,7 +258,6 @@ nginx_systemd() {
 [Unit]
 Description=The NGINX HTTP and reverse proxy server
 After=syslog.target network.target remote-fs.target nss-lookup.target
-
 [Service]
 Type=forking
 PIDFile=/etc/nginx/logs/nginx.pid
@@ -209,7 +266,6 @@ ExecStart=/etc/nginx/sbin/nginx -c ${nginx_dir}/conf/nginx.conf
 ExecReload=/etc/nginx/sbin/nginx -s reload
 ExecStop=/bin/kill -s QUIT \$MAINPID
 PrivateTmp=true
-
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -241,3 +297,4 @@ mvgpasd
 
 judge
 asdwcza
+
