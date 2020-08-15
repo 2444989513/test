@@ -28,7 +28,7 @@ nginx_version="1.19.2"
 openssl_version="1.1.1g"
 pcre_version="8.44"
 libunwind_version="1.5-rc2"
-google-perftools_version="2.8"
+google_perftools_version="2.8"
 
 jemalloc_version="5.2.1"
 
@@ -110,7 +110,7 @@ nginx_install() {
     wget -nc --no-check-certificate http://download.savannah.gnu.org/releases/libunwind/libunwind-${libunwind_version}.tar.gz -P ${nginx_openssl_src}
     judge "libunwind 下载"
 
-    wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-2.8/gperftools-${google-perftools_version}.tar.gz -P ${nginx_openssl_src}
+    wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-${google_perftools_version}/gperftools-${google_perftools_version}.tar.gz -P ${nginx_openssl_src}
     judge "google-perftools 下载"
 
 
@@ -136,8 +136,8 @@ nginx_install() {
     [[ -d libunwind-${libunwind_version} ]] && rm -rf libunwind-${libunwind_version}
     tar -zxvf libunwind-${libunwind_version}.tar.gz
 
-    [[ -d gperftools-${google-perftools_version} ]] && rm -rf gperftools-${google-perftools_version}
-    tar -zxvf gperftools-${google-perftools_version}.tar.gz
+    [[ -d gperftools-${google_perftools_version} ]] && rm -rf gperftools-${google_perftools_version}
+    tar -zxvf gperftools-${google_perftools_version}.tar.gz
 
     #[[ -d jemalloc-"${jemalloc_version}" ]] && rm -rf jemalloc-"${jemalloc_version}"
     #tar -xvf jemalloc-"${jemalloc_version}".tar.bz2
@@ -155,7 +155,7 @@ nginx_install() {
     make CFLAGS=-fPIC install
     judge "libunwind 编译安装"
 
-    cd ../gperftools-${google-perftools_version}
+    cd ../gperftools-${google_perftools_version}
     ./configure
     judge "编译检查"
     make && make install
@@ -241,12 +241,12 @@ nginx_install() {
     rm -rf ../nginx-"${nginx_version}"
     rm -rf ../openssl-"${openssl_version}"
     rm -rf ../libunwind-"${libunwind_version}"
-    rm -rf ../gperftools-"${google-perftools_version}"
+    rm -rf ../gperftools-"${google_perftools_version}"
     rm -rf ../nginx-"${nginx_version}".tar.gz
     rm -rf ../openssl-"${openssl_version}".tar.gz
     rm -rf ../pcre-"${pcre_version}".tar.gz
     rm -rf ../libunwind-"${libunwind_version}".tar.gz
-    rm -rf ../gperftools-"${google-perftools_version}".tar.gz
+    rm -rf ../gperftools-"${google_perftools_version}".tar.gz
 
     # 添加配置文件夹，适配旧版脚本
     #mkdir ${nginx_dir}/conf/conf.d
