@@ -134,19 +134,19 @@ nginx_install() {
     [[ -d openssl-"$openssl_version" ]] && rm -rf openssl-"$openssl_version"
     tar -zxvf openssl-"$openssl_version".tar.gz
 
-    [[ -d pcre-${pcre_version} ]] && rm -rf pcre-${pcre_version}
-    tar -zxvf pcre-${pcre_version}.tar.gz
+    [[ -d pcre-"${pcre_version}" ]] && rm -rf pcre-"${pcre_version}"
+    tar -zxvf pcre-"${pcre_version}".tar.gz
 
-    [[ -d libunwind-${libunwind_version} ]] && rm -rf libunwind-${libunwind_version}
-    tar -zxvf libunwind-${libunwind_version}.tar.gz
+    [[ -d libunwind-"${libunwind_version}" ]] && rm -rf libunwind-"${libunwind_version}"
+    tar -zxvf libunwind-"${libunwind_version}".tar.gz
 
-    [[ -d gperftools-${google_perftools_version} ]] && rm -rf gperftools-${google_perftools_version}
-    tar -zxvf gperftools-${google_perftools_version}.tar.gz
+    [[ -d gperftools-"${google_perftools_version}" ]] && rm -rf gperftools-"${google_perftools_version}"
+    tar -zxvf gperftools-"${google_perftools_version}".tar.gz
 
     #[[ -d jemalloc-"${jemalloc_version}" ]] && rm -rf jemalloc-"${jemalloc_version}"
     #tar -xvf jemalloc-"${jemalloc_version}".tar.bz2
 
-    [[ -d "$nginx_dir" ]] && rm -rf ${nginx_dir}
+    [[ -d "$nginx_dir" ]] && rm -rf "${nginx_dir}"
 
     echo -e "${OK} ${GreenBG} 即将开始编译安装 jemalloc ${Font}"
     sleep 2
