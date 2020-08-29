@@ -211,6 +211,7 @@ nginx_install() {
         --without-http_limit_conn_module                        \
         --without-http_limit_req_module                         \
         --with-google_perftools_module                          \
+        --with-http_slice_module                                \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../"pcre-${pcre_version}"                   \
