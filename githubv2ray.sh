@@ -3,8 +3,8 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
 
-v2rayNG_version="1.3.1"
-v2rayN_version="3.21"
+v2rayNG_version="1.3.3"
+v2rayN_version="3.23"
 
 
 gonexcwls() {
@@ -57,9 +57,9 @@ scwnicw() {
 cd Backup-v2ray
 
 ###
-rm -rf go.sh
+#rm -rf go.sh
 
-wget https://install.direct/go.sh
+#wget https://install.direct/go.sh
 
 ###
 
