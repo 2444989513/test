@@ -3,8 +3,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
 
-go_version="1.14.7"
-#go_version="1.15"
+go_version="1.15.1"
 
 
 
