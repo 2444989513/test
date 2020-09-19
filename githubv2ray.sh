@@ -64,11 +64,11 @@ cd Backup-v2ray
 ###
 
 
-    if [[ -d /root/.cache/bazel/_bazel_root/5571c66d5bb940674a99e2337ba11798/execroot/v2ray_core/bazel-out/k8-fastbuild/bin/release ]]; then
+    if [[ -d ./.cache/bazel/_bazel_root/5571c66d5bb940674a99e2337ba11798/execroot/v2ray_core/bazel-out/k8-fastbuild/bin/release ]]; then
 
        rm -rf v2ray-kernel-1
 
-       mv /root/.cache/bazel/_bazel_root/5571c66d5bb940674a99e2337ba11798/execroot/v2ray_core/bazel-out/k8-fastbuild/bin/release /root/test/Backup-v2ray/v2ray-kernel-1
+       mv ./.cache/bazel/_bazel_root/5571c66d5bb940674a99e2337ba11798/execroot/v2ray_core/bazel-out/k8-fastbuild/bin/release ./test/Backup-v2ray/v2ray-kernel-1
 
        cd v2ray-kernel-1
 
