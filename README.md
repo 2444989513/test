@@ -1,5 +1,11 @@
 
 
+# Debian 
+```
+bash <(curl -L -s https://raw.githubusercontent.com/2444989513/test/master/aatest.sh)
+```
+---
+
 ```
 bash <(curl -L -s https://raw.githubusercontent.com/2444989513/test/master/xray.sh)
 ```
