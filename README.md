@@ -7,7 +7,7 @@ bash <(curl -L -s https://raw.githubusercontent.com/2444989513/test/master/aates
 ---
 
 ```
-bash <(curl -L -s https://raw.githubusercontent.com/2444989513/test/master/xray.sh)
+bash -c "$(curl -L https://raw.githubusercontent.com/2444989513/test/master/xray.sh)" @ install
 ```
 ```
 
