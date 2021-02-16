@@ -31,8 +31,8 @@ nginx_systemd_file="/etc/systemd/system/nginx.service"
 nginx_version="1.19.6"
 openssl_version="1.1.1i"
 pcre_version="8.44"
-libunwind_version="1.5-rc2"
-google_perftools_version="2.8"
+libunwind_version="1.5.0"
+google_perftools_version="2.8.90"
 
 jemalloc_version="5.2.1"
 
