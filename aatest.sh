@@ -28,11 +28,11 @@ nginx_openssl_src="/usr/local/src"
 nginx_systemd_file="/etc/systemd/system/nginx.service"
 
 
-nginx_version="1.19.6"
-openssl_version="1.1.1i"
+nginx_version="1.19.7"
+openssl_version="1.1.1j"
 pcre_version="8.44"
 libunwind_version="1.5.0"
-google_perftools_version="2.8.90"
+google_perftools_version="2.9"
 
 jemalloc_version="5.2.1"
 
