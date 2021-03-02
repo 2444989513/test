@@ -93,7 +93,10 @@ nginx_install() {
     wget -nc --no-check-certificate http://download.savannah.gnu.org/releases/libunwind/libunwind-${libunwind_version}.tar.gz -P ${nginx_openssl_src}
     judge "libunwind 下载"
 
-    wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-${google_perftools_version}/gperftools-${google_perftools_version}.tar.gz -P ${nginx_openssl_src}
+   # wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-${google_perftools_version}/gperftools-${google_perftools_version}.tar.gz -P ${nginx_openssl_src}
+
+wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-2.9/gperftools-2.9.0.tar.gz -P /usr/local/src
+
     judge "google-perftools 下载"
 
 
