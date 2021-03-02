@@ -32,7 +32,7 @@ nginx_version="1.19.7"
 openssl_version="1.1.1j"
 pcre_version="8.44"
 libunwind_version="1.5.0"
-google_perftools_version="2.9"
+google_perftools_version="2.9.0"
 
 jemalloc_version="5.2.1"
 
