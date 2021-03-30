@@ -28,11 +28,11 @@ nginx_openssl_src="/usr/local/src"
 nginx_systemd_file="/etc/systemd/system/nginx.service"
 
 
-nginx_version="1.19.7"
-openssl_version="1.1.1j"
+nginx_version="1.19.8"
+openssl_version="1.1.1k"
 pcre_version="8.44"
 libunwind_version="1.5.0"
-google_perftools_version="2.9.0"
+google_perftools_version="2.9.1"
 
 jemalloc_version="5.2.1"
 
@@ -93,9 +93,9 @@ nginx_install() {
     wget -nc --no-check-certificate http://download.savannah.gnu.org/releases/libunwind/libunwind-${libunwind_version}.tar.gz -P ${nginx_openssl_src}
     judge "libunwind 下载"
 
-   # wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-${google_perftools_version}/gperftools-${google_perftools_version}.tar.gz -P ${nginx_openssl_src}
+    wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-${google_perftools_version}/gperftools-${google_perftools_version}.tar.gz -P ${nginx_openssl_src}
 
-wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-2.9/gperftools-2.9.0.tar.gz -P /usr/local/src
+#wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-2.9/gperftools-2.9.0.tar.gz -P /usr/local/src
 
     judge "google-perftools 下载"
 
