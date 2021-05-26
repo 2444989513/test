@@ -28,7 +28,7 @@ nginx_openssl_src="/usr/local/src"
 nginx_systemd_file="/etc/systemd/system/nginx.service"
 
 
-nginx_version="1.19.10"
+nginx_version="1.21.0"
 openssl_version="1.1.1k"
 pcre_version="8.44"
 libunwind_version="1.5.0"
