@@ -197,6 +197,7 @@ nginx_install() {
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../"pcre-${pcre_version}"                   \
+        --with-cc-opt="-Wno-error"              \
         --with-openssl=../openssl-"$openssl_version"
 
     judge "编译检查"
