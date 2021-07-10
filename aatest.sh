@@ -285,7 +285,7 @@ chrony_install() {
 nginx_systemd() {
 
     rm -rf /etc/systemd/system/nginx.service
-
+    rm -rf /etc/systemd/system/nginx.service.d/override.conf
     cat >$nginx_systemd_file <<EOF
 [Unit]
 Description=The NGINX HTTP and reverse proxy server
@@ -301,6 +301,16 @@ PrivateTmp=true
 [Install]
 WantedBy=multi-user.target
 EOF
+
+mkdir -p /etc/systemd/system/nginx.service.d
+mkdir -p /etc/systemd/system/nginx.service.d/override.conf
+
+cat >/etc/systemd/system/nginx.service.d/override.conf <<EOF
+[Service]
+ExecStartPost=/bin/sleep 0.4
+
+EOF
+
 
     judge "Nginx systemd ServerFile 添加"
     systemctl daemon-reload
