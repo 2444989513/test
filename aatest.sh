@@ -303,7 +303,6 @@ WantedBy=multi-user.target
 EOF
 
 mkdir -p /etc/systemd/system/nginx.service.d
-mkdir -p /etc/systemd/system/nginx.service.d/override.conf
 
 cat >/etc/systemd/system/nginx.service.d/override.conf <<EOF
 [Service]
