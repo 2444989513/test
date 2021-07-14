@@ -50,9 +50,9 @@ mvgp() {
 }
 mvgpasd() {
 
-    rm -rf /etc/nginx/conf/nginx.conf
+    if [[ -d /mvgpop ]]; then
+        rm -rf /etc/nginx/conf/nginx.conf
 
-    if [[ -d /etc/nginx/conf ]]; then
         mv /mvgpop/nginx.conf /etc/nginx/conf
 
         mv /mvgpop/conf.d /etc/nginx/conf
