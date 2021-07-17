@@ -31,6 +31,7 @@ nginx_systemd_file="/etc/systemd/system/nginx.service"
 nginx_version="1.21.1"
 openssl_version="3.0.0-beta1"
 pcre_version="8.45"
+zlib_version="1.2.11"
 libunwind_version="1.5.0"
 google_perftools_version="2.9.1"
 
@@ -93,6 +94,11 @@ nginx_install() {
     wget -nc --no-check-certificate https://ftp.pcre.org/pub/pcre/pcre-${pcre_version}.tar.gz -P ${nginx_openssl_src}
     judge "PCRE 下载"
 
+
+    wget -nc --no-check-certificate https://www.zlib.net/fossils/zlib-${zlib_version}.tar.gz -P ${nginx_openssl_src}
+    judge "zlib 下载"
+
+
     wget -nc --no-check-certificate http://download.savannah.gnu.org/releases/libunwind/libunwind-${libunwind_version}.tar.gz -P ${nginx_openssl_src}
     judge "libunwind 下载"
 
@@ -121,6 +127,9 @@ nginx_install() {
 
     [[ -d pcre-"${pcre_version}" ]] && rm -rf pcre-"${pcre_version}"
     tar -zxvf pcre-"${pcre_version}".tar.gz
+
+    [[ -d zlib-"${zlib_version}" ]] && rm -rf zlib-"${zlib_version}"
+    tar -zxvf zlib-"${zlib_version}".tar.gz
 
     [[ -d libunwind-"${libunwind_version}" ]] && rm -rf libunwind-"${libunwind_version}"
     tar -zxvf libunwind-"${libunwind_version}".tar.gz
@@ -157,6 +166,12 @@ nginx_install() {
     judge "编译检查"
     make && make install
     judge "pcre 编译安装"
+
+    cd ../zlib-${zlib_version}
+    ./configure
+    judge "编译检查"
+    make && make install
+    judge "zlib 编译安装"
 
 
     #cd ../jemalloc-${jemalloc_version} || exit
@@ -199,8 +214,11 @@ nginx_install() {
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../"pcre-${pcre_version}"                   \
-        --with-cc-opt="-Wno-error"              \
+        --with-zlib=../"zlib-${zlib_version}"                   \
+        --with-cc-opt="-Wno-error"                         \
         --with-openssl=../openssl-"$openssl_version"
+
+
 
     judge "编译检查"
     make && make install
@@ -240,6 +258,10 @@ nginx_install() {
     rm -rf ../pcre-"${pcre_version}".tar.gz
     rm -rf ../libunwind-"${libunwind_version}".tar.gz
     rm -rf ../gperftools-"${google_perftools_version}".tar.gz
+    rm -rf ../zlib-"${zlib_version}".tar.gz
+    rm -rf ../zlib-"${zlib_version}"
+
+
 
     # 添加配置文件夹，适配旧版脚本
     #mkdir ${nginx_dir}/conf/conf.d
