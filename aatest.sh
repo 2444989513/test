@@ -211,6 +211,7 @@ nginx_install() {
         --without-http_limit_req_module                         \
         --with-google_perftools_module                          \
         --with-http_slice_module                                \
+        --with-http_image_filter_module                         \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../"pcre-${pcre_version}"                   \
@@ -248,9 +249,9 @@ nginx_install() {
     echo 'export PATH' | sudo tee -a /etc/profile && source /etc/profile
 
     # 删除临时文件
-    #rm -rf ../pcre-"${pcre_version}"
-    #rm -rf ../libunwind-"${libunwind_version}"
-    #rm -rf ../gperftools-"${google_perftools_version}"
+    rm -rf ../pcre-"${pcre_version}"
+    rm -rf ../libunwind-"${libunwind_version}"
+    rm -rf ../gperftools-"${google_perftools_version}"
     rm -rf ../nginx-"${nginx_version}"
     rm -rf ../openssl-"${openssl_version}"
     rm -rf ../nginx-"${nginx_version}".tar.gz
