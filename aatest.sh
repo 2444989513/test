@@ -186,7 +186,6 @@ nginx_install() {
         --with-http_ssl_module                                  \
         --with-http_gzip_static_module                          \
         --with-http_stub_status_module                          \
-        --with-pcre                                             \
         --with-http_realip_module                               \
         --with-http_flv_module                                  \
         --with-http_mp4_module                                  \
