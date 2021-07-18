@@ -118,6 +118,9 @@ nginx_install() {
     [[ -d jemalloc ]] && rm -rf jemalloc
     git clone "https://github.com/jemalloc/jemalloc.git"
 
+    [[ -d nginx-module-vts ]] && rm -rf nginx-module-vts
+    git clone "https://github.com/vozlt/nginx-module-vts.git"
+
 
     [[ -d nginx-"$nginx_version" ]] && rm -rf nginx-"$nginx_version"
     tar -zxvf nginx-"$nginx_version".tar.gz
@@ -216,6 +219,7 @@ nginx_install() {
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../"pcre-${pcre_version}"                   \
         --with-zlib=../"zlib-${zlib_version}"                   \
+        --add-module=../nginx-module-vts                        \
         --with-cc-opt="-Wno-error"                         \
         --with-openssl=../openssl-"$openssl_version"
 
@@ -261,7 +265,7 @@ nginx_install() {
     rm -rf ../gperftools-"${google_perftools_version}".tar.gz
     rm -rf ../zlib-"${zlib_version}".tar.gz
     rm -rf ../zlib-"${zlib_version}"
-
+    rm -rf ../nginx-module-vts
 
 
     # 添加配置文件夹，适配旧版脚本
