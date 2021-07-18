@@ -151,14 +151,14 @@ nginx_install() {
 
     cd libunwind-${libunwind_version}
     CFLAGS=-fPIC ./configure
-    judge "编译检查"
+    judge "libunwind 编译检查"
     make CFLAGS=-fPIC
     make CFLAGS=-fPIC install
     judge "libunwind 编译安装"
 
     cd ../gperftools-${google_perftools_version}
     ./configure
-    judge "编译检查"
+    judge "gperftools 编译检查"
     make && make install
     judge "gperftools 编译安装"
     echo "/usr/local/lib" > /etc/ld.so.conf.d/usr_local_lib.conf
@@ -166,20 +166,20 @@ nginx_install() {
 
     cd ../pcre-${pcre_version}
     ./configure
-    judge "编译检查"
+    judge "pcre 编译检查"
     make && make install
     judge "pcre 编译安装"
 
     cd ../zlib-${zlib_version}
     ./configure
-    judge "编译检查"
+    judge "zlib 编译检查"
     make && make install
     judge "zlib 编译安装"
 
 
     #cd ../jemalloc-${jemalloc_version} || exit
     #./configure
-    #judge "编译检查"
+    #judge "jemalloc 编译检查"
     #make && make install
     #judge "jemalloc 编译安装"
     #echo '/usr/local/lib' >/etc/ld.so.conf.d/local.conf
@@ -188,7 +188,7 @@ nginx_install() {
     cd ../jemalloc || exit
     rm -rf .git
     ./autogen.sh
-    judge "编译检查"
+    judge "jemalloc 编译检查"
     make && make install
     judge "jemalloc 编译安装"
     echo '/usr/local/lib' >/etc/ld.so.conf.d/local.conf
