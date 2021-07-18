@@ -215,6 +215,7 @@ nginx_install() {
         --with-google_perftools_module                          \
         --with-http_slice_module                                \
         --with-http_image_filter_module                         \
+        --with-http_geoip_module                                \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../"pcre-${pcre_version}"                   \
