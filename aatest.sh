@@ -31,7 +31,6 @@ nginx_systemd_file="/etc/systemd/system/nginx.service"
 nginx_version="1.21.1"
 openssl_version="3.0.0-beta1"
 pcre_version="8.45"
-zlib_version="1.2.11"
 libunwind_version="1.5.0"
 google_perftools_version="2.9.1"
 
@@ -94,11 +93,6 @@ nginx_install() {
     wget -nc --no-check-certificate https://ftp.pcre.org/pub/pcre/pcre-${pcre_version}.tar.gz -P ${nginx_openssl_src}
     judge "PCRE 下载"
 
-
-    wget -nc --no-check-certificate https://www.zlib.net/fossils/zlib-${zlib_version}.tar.gz -P ${nginx_openssl_src}
-    judge "zlib 下载"
-
-
     wget -nc --no-check-certificate https://download.savannah.gnu.org/releases/libunwind/libunwind-${libunwind_version}.tar.gz -P ${nginx_openssl_src}
     judge "libunwind 下载"
 
@@ -114,10 +108,8 @@ nginx_install() {
 
     cd ${nginx_openssl_src} || exit
 
-
     [[ -d jemalloc ]] && rm -rf jemalloc
     git clone "https://github.com/jemalloc/jemalloc.git"
-
 
     [[ -d nginx-"$nginx_version" ]] && rm -rf nginx-"$nginx_version"
     tar -zxvf nginx-"$nginx_version".tar.gz
@@ -127,9 +119,6 @@ nginx_install() {
 
     [[ -d pcre-"${pcre_version}" ]] && rm -rf pcre-"${pcre_version}"
     tar -zxvf pcre-"${pcre_version}".tar.gz
-
-    [[ -d zlib-"${zlib_version}" ]] && rm -rf zlib-"${zlib_version}"
-    tar -zxvf zlib-"${zlib_version}".tar.gz
 
     [[ -d libunwind-"${libunwind_version}" ]] && rm -rf libunwind-"${libunwind_version}"
     tar -zxvf libunwind-"${libunwind_version}".tar.gz
@@ -149,6 +138,7 @@ nginx_install() {
     cd libunwind-${libunwind_version}
     CFLAGS=-fPIC ./configure
     judge "libunwind 编译检查"
+    sleep 4
     make CFLAGS=-fPIC
     make CFLAGS=-fPIC install
     judge "libunwind 编译安装"
@@ -156,6 +146,7 @@ nginx_install() {
     cd ../gperftools-${google_perftools_version}
     ./configure
     judge "gperftools 编译检查"
+    sleep 4
     make && make install
     judge "gperftools 编译安装"
     echo "/usr/local/lib" > /etc/ld.so.conf.d/usr_local_lib.conf
@@ -164,15 +155,9 @@ nginx_install() {
     cd ../pcre-${pcre_version}
     ./configure
     judge "pcre 编译检查"
+    sleep 4
     make && make install
     judge "pcre 编译安装"
-
-    cd ../zlib-${zlib_version}
-    ./configure
-    judge "zlib 编译检查"
-    make && make install
-    judge "zlib 编译安装"
-
 
     #cd ../jemalloc-${jemalloc_version} || exit
     #./configure
@@ -186,6 +171,7 @@ nginx_install() {
     rm -rf .git
     ./autogen.sh
     judge "jemalloc 编译检查"
+    sleep 4
     make && make install
     judge "jemalloc 编译安装"
     echo '/usr/local/lib' >/etc/ld.so.conf.d/local.conf
@@ -199,6 +185,7 @@ nginx_install() {
 
     ./configure --prefix="${nginx_dir}"                         \
         --with-http_ssl_module                                  \
+        --with-http_sub_module                                  \
         --with-http_gzip_static_module                          \
         --with-http_stub_status_module                          \
         --with-http_realip_module                               \
@@ -210,15 +197,13 @@ nginx_install() {
         --without-http_limit_conn_module                        \
         --without-http_limit_req_module                         \
         --with-google_perftools_module                          \
-        --with-http_slice_module                                \
         --with-http_image_filter_module                         \
+        --with-pcre                                             \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../"pcre-${pcre_version}"                   \
-        --with-zlib=../"zlib-${zlib_version}"                   \
         --with-cc-opt="-Wno-error"                         \
         --with-openssl=../openssl-"$openssl_version"
-
 
 
     judge "编译检查"
@@ -259,9 +244,6 @@ nginx_install() {
     rm -rf ../pcre-"${pcre_version}".tar.gz
     rm -rf ../libunwind-"${libunwind_version}".tar.gz
     rm -rf ../gperftools-"${google_perftools_version}".tar.gz
-    rm -rf ../zlib-"${zlib_version}".tar.gz
-    rm -rf ../zlib-"${zlib_version}"
-    #rm -rf ../nginx-module-vts
 
 
     # 添加配置文件夹，适配旧版脚本
@@ -308,6 +290,7 @@ nginx_systemd() {
 
     rm -rf /etc/systemd/system/nginx.service
     rm -rf /etc/systemd/system/nginx.service.d/override.conf
+
     cat >$nginx_systemd_file <<EOF
 [Unit]
 Description=The NGINX HTTP and reverse proxy server
