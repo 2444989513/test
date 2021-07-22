@@ -2,12 +2,6 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-cd "$(
-    cd "$(dirname "$0")" || exit
-    pwd
-)" || exit
-
-#source /opt/rh/devtoolset-9/enable
 
 #fonts color
 Green="\033[32m"
@@ -106,7 +100,7 @@ nginx_install() {
     #wget -nc --no-check-certificate https://github.com/jemalloc/jemalloc/releases/download/${jemalloc_version}/jemalloc-${jemalloc_version}.tar.bz2 -P ${nginx_openssl_src}
     #judge "jemalloc 下载"
 
-    cd ${nginx_openssl_src} || exit
+    cd ${nginx_openssl_src}
 
     [[ -d jemalloc ]] && rm -rf jemalloc
     git clone "https://github.com/jemalloc/jemalloc.git"
@@ -152,12 +146,12 @@ nginx_install() {
     echo "/usr/local/lib" > /etc/ld.so.conf.d/usr_local_lib.conf
     ldconfig
 
-    cd ../pcre-${pcre_version}
-    ./configure
-    judge "pcre 编译检查"
-    sleep 4
-    make && make install
-    judge "pcre 编译安装"
+    #cd ../pcre-${pcre_version}
+    #./configure
+    #judge "pcre 编译检查"
+    #sleep 4
+    #make && make install
+    #judge "pcre 编译安装"
 
     #cd ../jemalloc-${jemalloc_version} || exit
     #./configure
@@ -167,7 +161,7 @@ nginx_install() {
     #echo '/usr/local/lib' >/etc/ld.so.conf.d/local.conf
     #ldconfig
 
-    cd ../jemalloc || exit
+    cd ../jemalloc
     rm -rf .git
     ./autogen.sh
     judge "jemalloc 编译检查"
@@ -181,7 +175,7 @@ nginx_install() {
     echo -e "${OK} ${GreenBG} 即将开始编译安装 Nginx, 过程稍久，请耐心等待 ${Font}"
     sleep 4
 
-    cd ../nginx-${nginx_version} || exit
+    cd ../nginx-${nginx_version}
 
     ./configure --prefix="${nginx_dir}"                         \
         --with-http_ssl_module                                  \
@@ -232,6 +226,7 @@ nginx_install() {
 
     echo 'PATH=$PATH:/etc/nginx/sbin' | sudo tee -a /etc/profile
     echo 'export PATH' | sudo tee -a /etc/profile && source /etc/profile
+
 
     # 删除临时文件
     rm -rf ../pcre-"${pcre_version}"
