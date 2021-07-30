@@ -21,12 +21,12 @@ nginx_dir="/etc/nginx"
 nginx_openssl_src="/usr/local/src"
 nginx_systemd_file="/etc/systemd/system/nginx.service"
 
-#openssl_version="3.0.0-beta1"
+openssl_version="3.0.0-beta2"
 #--with-cc-opt="-Wno-error"   \
 
 
 nginx_version="1.21.1"
-openssl_version="1.1.1k"
+#openssl_version="1.1.1k"
 pcre_version="8.45"
 libunwind_version="1.5.0"
 google_perftools_version="2.9.1"
@@ -199,6 +199,7 @@ nginx_install() {
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../"pcre-${pcre_version}"                   \
+  --with-cc-opt="-Wno-error"   \
         --with-openssl=../openssl-"$openssl_version"
 
 
