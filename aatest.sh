@@ -164,7 +164,7 @@ nginx_install() {
     #echo '/usr/local/lib' >/etc/ld.so.conf.d/local.conf
     #ldconfig
 
-    cd ../jemalloc
+    cd jemalloc
     rm -rf .git
     ./autogen.sh
     judge "jemalloc 编译检查"
