@@ -24,14 +24,14 @@ nginx_systemd_file="/etc/systemd/system/nginx.service"
 openssl_version="3.0.0-beta2"
 #--with-cc-opt="-Wno-error"   \
 
-
 nginx_version="1.21.1"
 #openssl_version="1.1.1k"
 pcre_version="8.45"
-libunwind_version="1.5.0"
-google_perftools_version="2.9.1"
 
-jemalloc_version="5.2.1"
+
+#libunwind_version="1.5.0"
+#google_perftools_version="2.9.1"
+#jemalloc_version="5.2.1"
 
 
 mvgp() {
@@ -90,14 +90,14 @@ nginx_install() {
     wget -nc --no-check-certificate https://ftp.pcre.org/pub/pcre/pcre-${pcre_version}.tar.gz -P ${nginx_openssl_src}
     judge "PCRE 下载"
 
-    wget -nc --no-check-certificate https://download.savannah.gnu.org/releases/libunwind/libunwind-${libunwind_version}.tar.gz -P ${nginx_openssl_src}
-    judge "libunwind 下载"
+    #wget -nc --no-check-certificate https://download.savannah.gnu.org/releases/libunwind/libunwind-${libunwind_version}.tar.gz -P ${nginx_openssl_src}
+    #judge "libunwind 下载"
 
-    wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-${google_perftools_version}/gperftools-${google_perftools_version}.tar.gz -P ${nginx_openssl_src}
+    #wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-${google_perftools_version}/gperftools-${google_perftools_version}.tar.gz -P ${nginx_openssl_src}
 
-#wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-2.9/gperftools-2.9.0.tar.gz -P /usr/local/src
+  #wget -nc --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-2.9/gperftools-2.9.0.tar.gz -P /usr/local/src
 
-    judge "google-perftools 下载"
+    #judge "google-perftools 下载"
 
 
     #wget -nc --no-check-certificate https://github.com/jemalloc/jemalloc/releases/download/${jemalloc_version}/jemalloc-${jemalloc_version}.tar.bz2 -P ${nginx_openssl_src}
@@ -117,11 +117,11 @@ nginx_install() {
     [[ -d pcre-"${pcre_version}" ]] && rm -rf pcre-"${pcre_version}"
     tar -zxvf pcre-"${pcre_version}".tar.gz
 
-    [[ -d libunwind-"${libunwind_version}" ]] && rm -rf libunwind-"${libunwind_version}"
-    tar -zxvf libunwind-"${libunwind_version}".tar.gz
+    #[[ -d libunwind-"${libunwind_version}" ]] && rm -rf libunwind-"${libunwind_version}"
+    #tar -zxvf libunwind-"${libunwind_version}".tar.gz
 
-    [[ -d gperftools-"${google_perftools_version}" ]] && rm -rf gperftools-"${google_perftools_version}"
-    tar -zxvf gperftools-"${google_perftools_version}".tar.gz
+    #[[ -d gperftools-"${google_perftools_version}" ]] && rm -rf gperftools-"${google_perftools_version}"
+    #tar -zxvf gperftools-"${google_perftools_version}".tar.gz
 
     #[[ -d jemalloc-"${jemalloc_version}" ]] && rm -rf jemalloc-"${jemalloc_version}"
     #tar -xvf jemalloc-"${jemalloc_version}".tar.bz2
@@ -132,22 +132,22 @@ nginx_install() {
     sleep 2
 
 
-    cd libunwind-${libunwind_version}
-    CFLAGS=-fPIC ./configure
-    judge "libunwind 编译检查"
-    sleep 4
-    make CFLAGS=-fPIC
-    make CFLAGS=-fPIC install
-    judge "libunwind 编译安装"
+    #cd libunwind-${libunwind_version}
+    #CFLAGS=-fPIC ./configure
+    #judge "libunwind 编译检查"
+    #sleep 4
+    #make CFLAGS=-fPIC
+    #make CFLAGS=-fPIC install
+    #judge "libunwind 编译安装"
 
-    cd ../gperftools-${google_perftools_version}
-    ./configure
-    judge "gperftools 编译检查"
-    sleep 4
-    make && make install
-    judge "gperftools 编译安装"
-    echo "/usr/local/lib" > /etc/ld.so.conf.d/usr_local_lib.conf
-    ldconfig
+    #cd ../gperftools-${google_perftools_version}
+    #./configure
+    #judge "gperftools 编译检查"
+    #sleep 4
+    #make && make install
+    #judge "gperftools 编译安装"
+    #echo "/usr/local/lib" > /etc/ld.so.conf.d/usr_local_lib.conf
+    #ldconfig
 
     #cd ../pcre-${pcre_version}
     #./configure
@@ -168,9 +168,10 @@ nginx_install() {
     rm -rf .git
     ./autogen.sh
     judge "jemalloc 编译检查"
-    sleep 4
+    sleep 3
     make && make install
     judge "jemalloc 编译安装"
+    sleep 3
     echo '/usr/local/lib' >/etc/ld.so.conf.d/local.conf
     ldconfig
 
@@ -193,31 +194,28 @@ nginx_install() {
         --with-ipv6                                             \
         --without-http_limit_conn_module                        \
         --without-http_limit_req_module                         \
-        --with-google_perftools_module                          \
         --with-http_image_filter_module                         \
         --with-pcre                                             \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../"pcre-${pcre_version}"                   \
-  --with-cc-opt="-Wno-error"   \
+     --with-cc-opt="-Wno-error"   \
         --with-openssl=../openssl-"$openssl_version"
 
 
     judge "编译检查"
+    sleep 3
     make && make install
     judge "Nginx 编译安装"
 
-    # 修改基本配置
-    #sed -i 's/#user  nobody;/user  root;/' ${nginx_dir}/conf/nginx.conf
-    #sed -i 's/worker_processes  1;/worker_processes  3;/' ${nginx_dir}/conf/nginx.conf
-    #sed -i 's/    worker_connections  1024;/    worker_connections  4096;/' ${nginx_dir}/conf/nginx.conf
-    #sed -i '$i include conf.d/*.conf;' ${nginx_dir}/conf/nginx.conf
-    #sed -i '$i server_tokens off;' ${nginx_dir}/conf/nginx.conf
 
 
-    [[ -d /tmp/tcmalloc ]] && rm -rf /tmp/tcmalloc
-    mkdir /tmp/tcmalloc
-    chmod 777 /tmp/tcmalloc
+    #[[ -d /tmp/tcmalloc ]] && rm -rf /tmp/tcmalloc
+    #mkdir /tmp/tcmalloc
+    #chmod 777 /tmp/tcmalloc
+
+    #--with-google_perftools_module      \
+
     #启用TCMalloc（可选）
     #创建一个线程目录，将文件放在/tmp/tcmalloc下面
     #mkdir /tmp/tcmalloc
@@ -227,21 +225,22 @@ nginx_install() {
     #然后使用 nginx -s reload 重新加载nginx，使用 lsof -n | grep tcmalloc 查看是否存在tcmalloc进程，如果存在的话就说明加载成功了。
 
 
+
     echo 'PATH=$PATH:/etc/nginx/sbin' | sudo tee -a /etc/profile
     echo 'export PATH' | sudo tee -a /etc/profile && source /etc/profile
 
 
     # 删除临时文件
     rm -rf ../pcre-"${pcre_version}"
-    rm -rf ../libunwind-"${libunwind_version}"
-    rm -rf ../gperftools-"${google_perftools_version}"
+    #rm -rf ../libunwind-"${libunwind_version}"
+    #rm -rf ../gperftools-"${google_perftools_version}"
     rm -rf ../nginx-"${nginx_version}"
     rm -rf ../openssl-"${openssl_version}"
     rm -rf ../nginx-"${nginx_version}".tar.gz
     rm -rf ../openssl-"${openssl_version}".tar.gz
     rm -rf ../pcre-"${pcre_version}".tar.gz
-    rm -rf ../libunwind-"${libunwind_version}".tar.gz
-    rm -rf ../gperftools-"${google_perftools_version}".tar.gz
+    #rm -rf ../libunwind-"${libunwind_version}".tar.gz
+    #rm -rf ../gperftools-"${google_perftools_version}".tar.gz
 
 
     # 添加配置文件夹，适配旧版脚本
@@ -309,7 +308,7 @@ mkdir -p /etc/systemd/system/nginx.service.d
 
 cat >/etc/systemd/system/nginx.service.d/override.conf <<EOF
 [Service]
-ExecStartPost=/bin/sleep 0.4
+ExecStartPost=/bin/sleep 0.6
 
 EOF
 
