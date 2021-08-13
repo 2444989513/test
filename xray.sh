@@ -18,8 +18,7 @@ DAT_PATH=${DAT_PATH:-/usr/local/share/xray}
 
 # You can set this variable whatever you want in shell session right before running this script by issuing:
 # export JSON_PATH='/usr/local/etc/xray'
-# JSON_PATH=${JSON_PATH:-/usr/local/etc/xray}
-JSON_PATH=${JSON_PATH:-/etc/v2ray}
+JSON_PATH=${JSON_PATH:-/usr/local/etc/xray}
 
 # Set this variable only if you are starting xray with multiple configuration files:
 # export JSONS_PATH='/usr/local/etc/xray'
@@ -28,40 +27,70 @@ JSON_PATH=${JSON_PATH:-/etc/v2ray}
 # export check_all_service_files='yes'
 
 # Gobal verbals
+
+if [[ -f '/etc/systemd/system/xray.service' ]] && [[ -f '/usr/local/bin/xray' ]]; then
+  XRAY_IS_INSTALLED_BEFORE_RUNNING_SCRIPT=1
+else
+  XRAY_IS_INSTALLED_BEFORE_RUNNING_SCRIPT=0
+fi
+
 # Xray current version
-CURRENT_VERSION=""
+CURRENT_VERSION=''
+
 # Xray latest release version
-RELEASE_LATEST=""
+RELEASE_LATEST=''
+
+# Xray latest prerelease/release version
+PRE_RELEASE_LATEST=''
+
 # Xray version will be installed
-INSTALL_VERSION=""
+INSTALL_VERSION=''
+
 # install
 INSTALL='0'
+
 # install-geodata
 INSTALL_GEODATA='0'
+
 # remove
 REMOVE='0'
+
 # help
 HELP='0'
+
 # check
 CHECK='0'
+
 # --force
 FORCE='0'
+
 # --beta
 BETA='0'
+
 # --install-user ?
-INSTALL_USER=""
+INSTALL_USER=''
+
 # --without-geodata
 NO_GEODATA='0'
-# --not-update-service
+
+# --without-logfiles
+NO_LOGFILES='0'
+
+# --no-update-service
 N_UP_SERVICE='0'
+
 # --reinstall
 REINSTALL='0'
+
 # --version ?
-SPECIFIED_VERSION=""
+SPECIFIED_VERSION=''
+
 # --local ?
-LOCAL_FILE=""
+LOCAL_FILE=''
+
 # --proxy ?
-PROXY=""
+PROXY=''
+
 # --purge
 PURGE='0'
 
@@ -199,7 +228,7 @@ judgment_parameters() {
       'install-geodata')
         INSTALL_GEODATA='1'
         ;;
-      'remove' | '--remove')
+      'remove')
         REMOVE='1'
         ;;
       'help')
@@ -210,6 +239,9 @@ judgment_parameters() {
         ;;
       '--without-geodata')
         NO_GEODATA='1'
+        ;;
+      '--without-logfiles')
+        NO_LOGFILES='1'
         ;;
       '--purge')
         PURGE='1'
@@ -257,7 +289,7 @@ judgment_parameters() {
       '--reinstall')
         REINSTALL='1'
         ;;
-      '--not-update-service')
+      '--no-update-service')
         N_UP_SERVICE='1'
         ;;
       *)
@@ -322,48 +354,50 @@ get_current_version() {
 
 get_latest_version() {
   # Get Xray latest release version number
-  TMP_FILE="$(mktemp)"
-  if ! curl -x "${PROXY}" -sS -H "Accept: application/vnd.github.v3+json" -o "$TMP_FILE" 'https://api.github.com/repos/XTLS/Xray-core/releases/latest'; then
-    "rm" "$TMP_FILE"
+  local tmp_file
+  tmp_file="$(mktemp)"
+  if ! curl -x "${PROXY}" -sS -H "Accept: application/vnd.github.v3+json" -o "$tmp_file" 'https://api.github.com/repos/XTLS/Xray-core/releases/latest'; then
+    "rm" "$tmp_file"
     echo 'error: Failed to get release list, please check your network.'
     exit 1
   fi
-  RELEASE_LATEST="$(sed 'y/,/\n/' "$TMP_FILE" | grep 'tag_name' | awk -F '"' '{print $4}')"
+  RELEASE_LATEST="$(sed 'y/,/\n/' "$tmp_file" | grep 'tag_name' | awk -F '"' '{print $4}')"
   if [[ -z "$RELEASE_LATEST" ]]; then
-    if grep -q "API rate limit exceeded" "$TMP_FILE"; then
+    if grep -q "API rate limit exceeded" "$tmp_file"; then
       echo "error: github API rate limit exceeded"
     else
       echo "error: Failed to get the latest release version."
       echo "Welcome bug report:https://github.com/XTLS/Xray-install/issues"
     fi
-    "rm" "$TMP_FILE"
+    "rm" "$tmp_file"
     exit 1
   fi
-  "rm" "$TMP_FILE"
+  "rm" "$tmp_file"
   RELEASE_LATEST="v${RELEASE_LATEST#v}"
-  if ! curl -x "${PROXY}" -sS -H "Accept: application/vnd.github.v3+json" -o "$TMP_FILE" 'https://api.github.com/repos/XTLS/Xray-core/releases'; then
-    "rm" "$TMP_FILE"
+  if ! curl -x "${PROXY}" -sS -H "Accept: application/vnd.github.v3+json" -o "$tmp_file" 'https://api.github.com/repos/XTLS/Xray-core/releases'; then
+    "rm" "$tmp_file"
     echo 'error: Failed to get release list, please check your network.'
     exit 1
   fi
-  local releases_list=($(sed 'y/,/\n/' "$TMP_FILE" | grep 'tag_name' | awk -F '"' '{print $4}'))
-  if [[ -z "${releases_list[@]}" ]]; then
-    if grep -q "API rate limit exceeded" "$TMP_FILE"; then
+  local releases_list
+  releases_list=($(sed 'y/,/\n/' "$tmp_file" | grep 'tag_name' | awk -F '"' '{print $4}'))
+  if [[ "${#releases_list[@]}" -eq '0' ]]; then
+    if grep -q "API rate limit exceeded" "$tmp_file"; then
       echo "error: github API rate limit exceeded"
     else
       echo "error: Failed to get the latest release version."
       echo "Welcome bug report:https://github.com/XTLS/Xray-install/issues"
     fi
-    "rm" "$TMP_FILE"
+    "rm" "$tmp_file"
     exit 1
   fi
   local i
   for i in ${!releases_list[@]}
   do
     releases_list[$i]="v${releases_list[$i]#v}"
-    grep -q "https://github.com/XTLS/Xray-core/releases/download/${releases_list[$i]}/Xray-linux-$MACHINE.zip" "$TMP_FILE" && break
+    grep -q "https://github.com/XTLS/Xray-core/releases/download/${releases_list[$i]}/Xray-linux-$MACHINE.zip" "$tmp_file" && break
   done
-  "rm" "$TMP_FILE"
+  "rm" "$tmp_file"
   PRE_RELEASE_LATEST="${releases_list[$i]}"
 }
 
@@ -375,12 +409,14 @@ version_gt() {
   if [[ "$1" != "$2" ]]; then
     local temp_1_version_number="${1#v}"
     local temp_1_major_version_number="${temp_1_version_number%%.*}"
-    local temp_1_minor_version_number="$(echo "$temp_1_version_number" | awk -F '.' '{print $2}')"
+    local temp_1_minor_version_number
+    temp_1_minor_version_number="$(echo "$temp_1_version_number" | awk -F '.' '{print $2}')"
     local temp_1_minimunm_version_number="${temp_1_version_number##*.}"
     # shellcheck disable=SC2001
     local temp_2_version_number="${2#v}"
     local temp_2_major_version_number="${temp_2_version_number%%.*}"
-    local temp_2_minor_version_number="$(echo "$temp_2_version_number" | awk -F '.' '{print $2}')"
+    local temp_2_minor_version_number
+    temp_2_minor_version_number="$(echo "$temp_2_version_number" | awk -F '.' '{print $2}')"
     local temp_2_minimunm_version_number="${temp_2_version_number##*.}"
     if [[ "$temp_1_major_version_number" -gt "$temp_2_major_version_number" ]]; then
       return 0
@@ -481,13 +517,15 @@ install_xray() {
   fi
 
   # Used to store Xray log files
-  if [[ ! -d '/var/log/xray/' ]]; then
-    install -d -m 700 -o $INSTALL_USER_UID -g $INSTALL_USER_GID /var/log/xray/
-    install -m 600 -o $INSTALL_USER_UID -g $INSTALL_USER_GID /dev/null /var/log/xray/access.log
-    install -m 600 -o $INSTALL_USER_UID -g $INSTALL_USER_GID /dev/null /var/log/xray/error.log
-    LOG='1'
-  else
-    chown -R $INSTALL_USER_UID:$INSTALL_USER_GID /var/log/xray/
+  if [[ "$NO_LOGFILES" -eq '0' ]]; then
+    if [[ ! -d '/var/log/xray/' ]]; then
+      install -d -m 700 -o "$INSTALL_USER_UID" -g "$INSTALL_USER_GID" /var/log/xray/
+      install -m 600 -o "$INSTALL_USER_UID" -g "$INSTALL_USER_GID" /dev/null /var/log/xray/access.log
+      install -m 600 -o "$INSTALL_USER_UID" -g "$INSTALL_USER_GID" /dev/null /var/log/xray/error.log
+      LOG='1'
+    else
+      chown -R "$INSTALL_USER_UID:$INSTALL_USER_GID" /var/log/xray/
+    fi
   fi
 }
 
@@ -507,6 +545,7 @@ cat > /etc/systemd/system/xray.service << EOF
 Description=Xray Service
 Documentation=https://github.com/xtls
 After=network.target nss-lookup.target
+
 [Service]
 User=$INSTALL_USER
 ${temp_CapabilityBoundingSet}
@@ -517,6 +556,7 @@ Restart=on-failure
 RestartPreventExitStatus=23
 LimitNPROC=10000
 LimitNOFILE=1000000
+
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -525,6 +565,7 @@ cat > /etc/systemd/system/xray@.service <<EOF
 Description=Xray Service
 Documentation=https://github.com/xtls
 After=network.target nss-lookup.target
+
 [Service]
 User=$INSTALL_USER
 ${temp_CapabilityBoundingSet}
@@ -535,6 +576,7 @@ Restart=on-failure
 RestartPreventExitStatus=23
 LimitNPROC=10000
 LimitNOFILE=1000000
+
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -581,7 +623,9 @@ ExecStart=/usr/local/bin/xray run -config ${JSON_PATH}/%i.json" > \
 
 start_xray() {
   if [[ -f '/etc/systemd/system/xray.service' ]]; then
-    if systemctl start "${XRAY_CUSTOMIZE:-xray}"; then
+    systemctl start "${XRAY_CUSTOMIZE:-xray}"
+    sleep 1s
+    if systemctl -q is-active "${XRAY_CUSTOMIZE:-xray}"; then
       echo 'info: Start the Xray service.'
     else
       echo 'error: Failed to start Xray service.'
@@ -620,8 +664,9 @@ install_geodata() {
   local file_ip='geoip.dat'
   local file_dlc='dlc.dat'
   local file_site='geosite.dat'
-  local dir_tmp="$(mktemp -d)"
-  [[ ! -f '/usr/local/bin/xray' ]] && echo "warning: Xray was not installed"
+  local dir_tmp
+  dir_tmp="$(mktemp -d)"
+  [[ "$XRAY_IS_INSTALLED_BEFORE_RUNNING_SCRIPT" -eq '0' ]] && echo "warning: Xray was not installed"
   download_geodata $download_link_geoip $file_ip
   download_geodata $download_link_geosite $file_dlc
   cd "${dir_tmp}" || exit
@@ -640,7 +685,7 @@ install_geodata() {
 }
 
 check_update() {
-  if [[ -f '/etc/systemd/system/xray.service' ]]; then
+  if [[ "$XRAY_IS_INSTALLED_BEFORE_RUNNING_SCRIPT" -eq '1' ]]; then
     get_current_version
     echo "info: The current version of Xray is $CURRENT_VERSION ."
   else
@@ -665,7 +710,7 @@ remove_xray() {
       else
         delete_files+=("$JSONS_PATH")
       fi
-      delete_files+=('/var/log/xray')
+      [[ -d '/var/log/xray' ]] && delete_files+=('/var/log/xray')
     fi
     systemctl disable xray
     if ! ("rm" -r "${delete_files[@]}"); then
@@ -716,8 +761,9 @@ show_help() {
   echo '    -p, --proxy               Download through a proxy server, e.g., -p http://127.0.0.1:8118 or -p socks5://127.0.0.1:1080'
   echo '    -u, --install-user        Install Xray in specified user, e.g, -u root'
   echo '    --reinstall               Reinstall current Xray version'
-  echo "    --not-update-service      Don't change service files if they are exist"
+  echo "    --no-update-service       Don't change service files if they are exist"
   echo "    --without-geodata         Don't install/update geoip.dat and geosite.dat"
+  echo "    --without-logfiles        Don't install /var/log/xray"
   echo '  install-geodata:'
   echo '    -p, --proxy               Download through a proxy server'
   echo '  remove:'
@@ -783,9 +829,7 @@ main() {
       else
         INSTALL_VERSION="$PRE_RELEASE_LATEST"
       fi
-      version_gt $INSTALL_VERSION $CURRENT_VERSION
-      local temp_number=$?
-      if [[ "$temp_number" -eq '1' ]] && [[ "$FORCE" -eq '0' ]]; then
+      if ! version_gt "$INSTALL_VERSION" "$CURRENT_VERSION" && [[ "$FORCE" -eq '0' ]]; then
         echo "info: No new version. The current version of Xray is $CURRENT_VERSION ."
         exit 0
       fi
@@ -793,8 +837,7 @@ main() {
     fi
     install_software 'curl' 'curl'
     install_software 'unzip' 'unzip'
-    download_xray
-    if [[ "$?" -eq '1' ]]; then
+    if ! download_xray; then
       "rm" -r "$TMP_DIRECTORY"
       echo "removed: $TMP_DIRECTORY"
       exit 1
@@ -846,11 +889,13 @@ main() {
   get_current_version
   echo "info: Xray $CURRENT_VERSION is installed."
   echo "You may need to execute a command to remove dependent software: $PACKAGE_MANAGEMENT_REMOVE curl unzip"
-  if [[ "$XRAY_RUNNING" -eq '1' ]]; then
-    start_xray
+  if [[ "$XRAY_IS_INSTALLED_BEFORE_RUNNING_SCRIPT" -eq '1' ]] && [[ "$FORCE" -eq '0' ]] && [[ "$REINSTALL" -eq '0' ]]; then
+    [[ "$XRAY_RUNNING" -eq '1' ]] && start_xray
   else
-    systemctl --now enable xray
-    if [[ "$?" -eq 0 ]]; then
+    systemctl start xray
+    systemctl enable xray
+    sleep 1s
+    if systemctl -q is-active xray; then
       echo "info: Enable and start the Xray service"
     else
       echo "warning: Failed to enable and start the Xray service"
