@@ -198,7 +198,7 @@ nginx_install() {
         --with-pcre                                             \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
-        --with-pcre=../"pcre-${pcre_version}"                   \
+        --with-pcre=../pcre-"${pcre_version}"                   \
      --with-cc-opt="-Wno-error"   \
         --with-openssl=../openssl-"$openssl_version"
 
