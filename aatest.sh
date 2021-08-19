@@ -291,24 +291,29 @@ nginx_systemd() {
     cat >$nginx_systemd_file <<EOF
 [Unit]
 Description=The NGINX HTTP and reverse proxy server
-After=syslog.target network.target remote-fs.target nss-lookup.target
+After=syslog.target network-online.target remote-fs.target nss-lookup.target
+Wants=network-online.target
 [Service]
 Type=forking
 PIDFile=/etc/nginx/logs/nginx.pid
 ExecStartPre=/etc/nginx/sbin/nginx -t
 ExecStart=/etc/nginx/sbin/nginx -c ${nginx_dir}/conf/nginx.conf
 ExecReload=/etc/nginx/sbin/nginx -s reload
-ExecStop=/bin/kill -s QUIT \$MAINPID
+ExecStop=/etc/nginx/sbin/nginx -s stop                                                       //停止命令
+# 官网示例如下，但个人使用的为上面两种，尚分不清好坏
+# ExecReload=/bin/kill -s HUP $MAINPID
+# ExecStop=/bin/kill -s QUIT $MAINPID
 PrivateTmp=true
 [Install]
 WantedBy=multi-user.target
 EOF
 
+
 mkdir -p /etc/systemd/system/nginx.service.d
 
 cat >/etc/systemd/system/nginx.service.d/override.conf <<EOF
 [Service]
-ExecStartPost=/bin/sleep 0.6
+ExecStartPost=/bin/sleep 0.9
 
 EOF
 
