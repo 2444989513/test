@@ -299,7 +299,7 @@ PIDFile=/etc/nginx/logs/nginx.pid
 ExecStartPre=/etc/nginx/sbin/nginx -t
 ExecStart=/etc/nginx/sbin/nginx -c ${nginx_dir}/conf/nginx.conf
 ExecReload=/etc/nginx/sbin/nginx -s reload
-ExecStop=/etc/nginx/sbin/nginx -s stop                                                       //停止命令
+ExecStop=/etc/nginx/sbin/nginx -s stop
 # 官网示例如下，但个人使用的为上面两种，尚分不清好坏
 # ExecReload=/bin/kill -s HUP $MAINPID
 # ExecStop=/bin/kill -s QUIT $MAINPID
