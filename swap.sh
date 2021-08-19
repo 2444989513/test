@@ -45,7 +45,7 @@ if [ $? -ne 0 ]; then
 	
 	
         #echo '/swapfile none swap defaults 0 0' >> /etc/fstab
-        echo '/swapfile   swap    swap    sw  0   0' >> /etc/fstab
+        echo '/swapfile   swap    swap    defaults  0   0' >> /etc/fstab
 	
 	
          echo -e "${Green}swap创建成功，并查看信息：${Font}"
