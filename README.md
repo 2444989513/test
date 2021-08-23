@@ -9,6 +9,12 @@ bash <(curl -L -s https://raw.githubusercontent.com/2444989513/test/master/aates
 ```
 bash -c "$(curl -L https://raw.githubusercontent.com/2444989513/test/master/xray.sh)" @ install
 ```
+# wireguard-go-builder.sh
+```
+curl -fsSL https://raw.githubusercontent.com/2444989513/test/master/wireguard-go-builder.sh | sudo bash
+```
+---
+
 ```
 
 sudo apt-get install screen -y && screen -S test
