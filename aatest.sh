@@ -190,7 +190,6 @@ nginx_install() {
         --with-http_mp4_module                                  \
         --with-http_secure_link_module                          \
         --with-http_v2_module                                   \
-        --with-ipv6                                             \
         --without-http_limit_conn_module                        \
         --without-http_limit_req_module                         \
         --with-http_image_filter_module                         \
