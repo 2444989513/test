@@ -26,9 +26,8 @@ nginx_systemd_file="/etc/systemd/system/nginx.service"
 
 nginx_version="1.21.4"
 openssl_version="3.0.0"
-pcre_version="8.45"
 
-
+#pcre_version="8.45"
 #libunwind_version="1.5.0"
 #google_perftools_version="2.9.1"
 #jemalloc_version="5.2.1"
@@ -87,8 +86,8 @@ nginx_install() {
     wget -nc --no-check-certificate https://www.openssl.org/source/openssl-${openssl_version}.tar.gz -P ${nginx_openssl_src}
     judge "openssl 下载"
 
-    wget -nc --no-check-certificate https://ftp.pcre.org/pub/pcre/pcre-${pcre_version}.tar.gz -P ${nginx_openssl_src}
-    judge "PCRE 下载"
+    #wget -nc --no-check-certificate https://ftp.pcre.org/pub/pcre/pcre-${pcre_version}.tar.gz -P ${nginx_openssl_src}
+    #judge "PCRE 下载"
 
     #wget -nc --no-check-certificate https://download.savannah.gnu.org/releases/libunwind/libunwind-${libunwind_version}.tar.gz -P ${nginx_openssl_src}
     #judge "libunwind 下载"
@@ -114,8 +113,8 @@ nginx_install() {
     [[ -d openssl-"$openssl_version" ]] && rm -rf openssl-"$openssl_version"
     tar -zxvf openssl-"$openssl_version".tar.gz
 
-    [[ -d pcre-"${pcre_version}" ]] && rm -rf pcre-"${pcre_version}"
-    tar -zxvf pcre-"${pcre_version}".tar.gz
+    #[[ -d pcre-"${pcre_version}" ]] && rm -rf pcre-"${pcre_version}"
+    #tar -zxvf pcre-"${pcre_version}".tar.gz
 
     #[[ -d libunwind-"${libunwind_version}" ]] && rm -rf libunwind-"${libunwind_version}"
     #tar -zxvf libunwind-"${libunwind_version}".tar.gz
@@ -198,7 +197,6 @@ nginx_install() {
         --with-pcre                                             \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
-        --with-pcre=../pcre-"${pcre_version}"                   \
         --with-openssl=../openssl-"$openssl_version"
 
 
@@ -208,7 +206,7 @@ nginx_install() {
     judge "Nginx 编译安装"
 
 
-
+        #--with-pcre=../pcre-"${pcre_version}"
     #[[ -d /tmp/tcmalloc ]] && rm -rf /tmp/tcmalloc
     #mkdir /tmp/tcmalloc
     #chmod 777 /tmp/tcmalloc
@@ -230,14 +228,14 @@ nginx_install() {
 
 
     # 删除临时文件
-    rm -rf ../pcre-"${pcre_version}"
+    #rm -rf ../pcre-"${pcre_version}"
     #rm -rf ../libunwind-"${libunwind_version}"
     #rm -rf ../gperftools-"${google_perftools_version}"
     rm -rf ../nginx-"${nginx_version}"
     rm -rf ../openssl-"${openssl_version}"
     rm -rf ../nginx-"${nginx_version}".tar.gz
     rm -rf ../openssl-"${openssl_version}".tar.gz
-    rm -rf ../pcre-"${pcre_version}".tar.gz
+    #rm -rf ../pcre-"${pcre_version}".tar.gz
     #rm -rf ../libunwind-"${libunwind_version}".tar.gz
     #rm -rf ../gperftools-"${google_perftools_version}".tar.gz
 
