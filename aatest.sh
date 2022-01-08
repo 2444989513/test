@@ -195,7 +195,7 @@ nginx_install() {
         --with-http_image_filter_module                         \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
-        --with-pcre=../pcre2-"${pcre2_version}"                 \
+        --with-pcre=../pcre2-"$pcre2_version"                   \
         --with-openssl=../openssl-"$openssl_version"
 
 
