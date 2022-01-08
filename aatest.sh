@@ -193,10 +193,9 @@ nginx_install() {
         --without-http_limit_conn_module                        \
         --without-http_limit_req_module                         \
         --with-http_image_filter_module                         \
-        --with-pcre2                                            \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
-        --with-pcre2=../pcre2-"${pcre2_version}"                \
+        --with-pcre=../pcre2-"${pcre2_version}"                 \
         --with-openssl=../openssl-"$openssl_version"
 
 
@@ -205,7 +204,7 @@ nginx_install() {
     make && make install
     judge "Nginx 编译安装"
 
-
+        #--with-pcre2       \
         #--with-pcre=../pcre2-"${pcre2_version}"
     #[[ -d /tmp/tcmalloc ]] && rm -rf /tmp/tcmalloc
     #mkdir /tmp/tcmalloc
