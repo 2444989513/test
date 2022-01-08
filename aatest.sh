@@ -227,14 +227,14 @@ nginx_install() {
 
 
     # 删除临时文件
-    #rm -rf ../pcre-"${pcre_version}"
+    rm -rf ../pcre2-"${pcre2_version}"
     #rm -rf ../libunwind-"${libunwind_version}"
     #rm -rf ../gperftools-"${google_perftools_version}"
     rm -rf ../nginx-"${nginx_version}"
     rm -rf ../openssl-"${openssl_version}"
     rm -rf ../nginx-"${nginx_version}".tar.gz
     rm -rf ../openssl-"${openssl_version}".tar.gz
-    #rm -rf ../pcre-"${pcre_version}".tar.gz
+    rm -rf ../pcre2-"${pcre2_version}".tar.gz
     #rm -rf ../libunwind-"${libunwind_version}".tar.gz
     #rm -rf ../gperftools-"${google_perftools_version}".tar.gz
 
