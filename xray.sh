@@ -18,8 +18,7 @@ DAT_PATH=${DAT_PATH:-/usr/local/share/xray}
 
 # You can set this variable whatever you want in shell session right before running this script by issuing:
 # export JSON_PATH='/usr/local/etc/xray'
-# JSON_PATH=${JSON_PATH:-/usr/local/etc/xray}
-JSON_PATH=${JSON_PATH:-/etc/v2ray}
+JSON_PATH=${JSON_PATH:-/usr/local/etc/xray}
 
 # Set this variable only if you are starting xray with multiple configuration files:
 # export JSONS_PATH='/usr/local/etc/xray'
@@ -152,6 +151,7 @@ identify_the_operating_system_and_architecture() {
         ;;
       'mips64')
         MACHINE='mips64'
+        lscpu | grep -q "Little Endian" && MACHINE='mips64le'
         ;;
       'mips64le')
         MACHINE='mips64le'
@@ -206,6 +206,10 @@ identify_the_operating_system_and_architecture() {
     elif [[ "$(type -P pacman)" ]]; then
       PACKAGE_MANAGEMENT_INSTALL='pacman -Syu --noconfirm'
       PACKAGE_MANAGEMENT_REMOVE='pacman -Rsn'
+      package_provide_tput='ncurses'
+     elif [[ "$(type -P emerge)" ]]; then
+      PACKAGE_MANAGEMENT_INSTALL='emerge -qv'
+      PACKAGE_MANAGEMENT_REMOVE='emerge -Cv'
       package_provide_tput='ncurses'
     else
       echo "error: The script does not support the package manager in this operating system."
@@ -335,7 +339,7 @@ install_software() {
   package_name="$1"
   file_to_detect="$2"
   type -P "$file_to_detect" > /dev/null 2>&1 && return
-  if ${PACKAGE_MANAGEMENT_INSTALL} "$package_name"; then
+  if ${PACKAGE_MANAGEMENT_INSTALL} "$package_name" >/dev/null 2>&1; then
     echo "info: $package_name is installed."
   else
     echo "error: Installation of $package_name failed, please check your network."
@@ -403,42 +407,7 @@ get_latest_version() {
 }
 
 version_gt() {
-  # compare two version
-  # 0: $1 >  $2
-  # 1: $1 <= $2
-
-  if [[ "$1" != "$2" ]]; then
-    local temp_1_version_number="${1#v}"
-    local temp_1_major_version_number="${temp_1_version_number%%.*}"
-    local temp_1_minor_version_number
-    temp_1_minor_version_number="$(echo "$temp_1_version_number" | awk -F '.' '{print $2}')"
-    local temp_1_minimunm_version_number="${temp_1_version_number##*.}"
-    # shellcheck disable=SC2001
-    local temp_2_version_number="${2#v}"
-    local temp_2_major_version_number="${temp_2_version_number%%.*}"
-    local temp_2_minor_version_number
-    temp_2_minor_version_number="$(echo "$temp_2_version_number" | awk -F '.' '{print $2}')"
-    local temp_2_minimunm_version_number="${temp_2_version_number##*.}"
-    if [[ "$temp_1_major_version_number" -gt "$temp_2_major_version_number" ]]; then
-      return 0
-    elif [[ "$temp_1_major_version_number" -eq "$temp_2_major_version_number" ]]; then
-      if [[ "$temp_1_minor_version_number" -gt "$temp_2_minor_version_number" ]]; then
-        return 0
-      elif [[ "$temp_1_minor_version_number" -eq "$temp_2_minor_version_number" ]]; then
-        if [[ "$temp_1_minimunm_version_number" -gt "$temp_2_minimunm_version_number" ]]; then
-          return 0
-        else
-          return 1
-        fi
-      else
-        return 1
-      fi
-    else
-      return 1
-    fi
-  elif [[ "$1" == "$2" ]]; then
-    return 1
-  fi
+  test "$(echo -e "$1\\n$2" | sort -V | head -n 1)" != "$1"
 }
 
 download_xray() {
