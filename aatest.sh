@@ -57,14 +57,14 @@ mvgpasd() {
     fi
 
     if [[ -d /etc/nginx/conf/conf.d ]]; then
-    chown -R www.www /etc/nginx
-    chown root.www /etc/nginx/sbin/nginx
+    chown -R www:www /etc/nginx
+    chown root:www /etc/nginx/sbin/nginx
 
     systemctl daemon-reload && systemctl restart nginx.service
     judge "nginx 启动 1"
 
-    chown -R www.www /etc/nginx
-    chown root.www /etc/nginx/sbin/nginx
+    chown -R www:www /etc/nginx
+    chown root:www /etc/nginx/sbin/nginx
 
     systemctl daemon-reload && systemctl restart nginx.service
     judge "nginx 启动 2"
