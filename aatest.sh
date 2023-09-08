@@ -21,11 +21,11 @@ nginx_dir="/etc/nginx"
 nginx_openssl_src="/usr/local/src"
 nginx_systemd_file="/etc/systemd/system/nginx.service"
 
-#openssl_version="3.0.0-beta2"
+openssl_version="3.2.0-alpha1"
 #--with-cc-opt="-Wno-error"   \
 
 nginx_version="1.25.2"
-openssl_version="3.1.2"
+#openssl_version="3.1.2"
 pcre2_version="10.42"
 
 #libunwind_version="1.5.0"
@@ -193,6 +193,7 @@ nginx_install() {
         --without-http_limit_conn_module                        \
         --without-http_limit_req_module                         \
         --with-http_image_filter_module                         \
+        --with-http_v3_module                           \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../pcre2-"$pcre2_version"                   \
