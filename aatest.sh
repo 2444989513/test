@@ -21,7 +21,7 @@ nginx_dir="/etc/nginx"
 nginx_openssl_src="/usr/local/src"
 nginx_systemd_file="/etc/systemd/system/nginx.service"
 
-openssl_version="3.2.0-alpha1"
+openssl_version="3.2.0-alpha2"
 #--with-cc-opt="-Wno-error"   \
 
 nginx_version="1.25.2"
