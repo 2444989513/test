@@ -25,7 +25,7 @@ nginx_systemd_file="/etc/systemd/system/nginx.service"
 #--with-cc-opt="-Wno-error"   \
 
 nginx_version="1.25.3"
-openssl_version="3.2.0"
+openssl_version="3.2.1"
 pcre2_version="10.43-RC1"
 
 #libunwind_version="1.5.0"
