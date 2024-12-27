@@ -26,7 +26,7 @@ nginx_systemd_file="/etc/systemd/system/nginx.service"
 
 nginx_version="1.27.3"
 openssl_version="3.4.0"
-pcre2_version="10.44"
+pcre2_version="10.45-RC1"
 
 #libunwind_version="1.5.0"
 #google_perftools_version="2.9.1"
