@@ -33,6 +33,16 @@ pcre2_version="10.47"
 #jemalloc_version="5.2.1"
 
 
+version() {
+    echo -e nginx-"${nginx_version}"
+    echo -e pcre2-"$pcre2_version"
+    echo -e openssl-"$openssl_version"
+    sleep 10
+
+}
+
+
+
 mvgp() {
 
     systemctl stop nginx
@@ -332,7 +342,7 @@ judge() {
 
 
 asdwcza() {
-
+version
 chrony_install
 mvgp
 nginx_install
