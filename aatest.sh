@@ -204,7 +204,7 @@ nginx_install() {
         --without-http_limit_req_module                         \
         --with-http_image_filter_module                         \
         --with-http_v3_module                                   \
-        --with-stream_module                                    \
+        --with-stream                                           \
         --with-cc-opt='-O3'                                     \
         --with-ld-opt="-ljemalloc"                              \
         --with-pcre=../pcre2-"$pcre2_version"                   \
