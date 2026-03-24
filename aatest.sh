@@ -21,11 +21,11 @@ nginx_dir="/etc/nginx"
 nginx_openssl_src="/usr/local/src"
 nginx_systemd_file="/etc/systemd/system/nginx.service"
 
-#openssl_version="3.6.0-beta1"
+openssl_version="4.0.0-beta1"
 #--with-cc-opt="-Wno-error"   \
 
-nginx_version="1.29.6"
-openssl_version="3.6.1"
+nginx_version="1.29.7"
+#openssl_version="3.6.1"
 pcre2_version="10.47"
 
 #libunwind_version="1.5.0"
